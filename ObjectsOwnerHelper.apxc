@@ -4,7 +4,7 @@
 public class ObjectsOwnerHelper {
 
   private static object_api_names = new List<String>();
-
+  
   private static void initialize(){
   
     Schema.DescribeSObjectResult userDSR = User.SObjectType.getDescribe();
@@ -20,9 +20,30 @@ public class ObjectsOwnerHelper {
       api_names.add(dsr.getName());
     }
   } //end of initialize()
+  
+  private static SObject[] flatten(List<List<SObject>> sobs){
+    List<SObject> newsob = new List<SObject>();
+    for(List<SObject> sob : sobs){
+      newsob.addAll(sob);
+     }
+     return newsob;
+  } // end of flatten()
 
   public static SObject[] getObjects(id userId){
-      return null;
-  }
+      String query1 = 'SELECT Id FROM ';
+      String query2 = ' WHERE Id = :userId';
+      String[] queries = new List<String>();
+      
+      for(String name : object_api_names){
+        queries.add(query1 + name + query2);
+      }
+      
+      List<List<SObject>> rets = new List<List<SObject>>();
+      for(String query : queries){
+        rets.add(Database.query(query));
+      }
+      
+      return flatten(rets);
+  }// end of getObjects()
 
 }
