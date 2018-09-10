@@ -1,0 +1,28 @@
+/*
+* 
+*/
+public class ObjectsOwnerHelper {
+
+  private static object_api_names = new List<String>();
+
+  private static void initialize(){
+  
+    Schema.DescribeSObjectResult userDSR = User.SObjectType.getDescribe();
+    Set<Schema.DescribeSObjectResult> dsrsS = new Set<Schema.DescribeSObjectResult>();
+    
+    for(Schema.ChildRelationship child : userDSR.getChildRelationships()){
+      if(child.getChildSObject().getDescribe().isSearchable()){
+        dsrsS.add(child.getChildSObject().getDescribe());
+      }
+    }
+    
+    for(Schema.DescribeSObjectResult dsr : dsrsS){
+      api_names.add(dsr.getName());
+    }
+  } //end of initialize()
+
+  public static SObject[] getObjects(id userId){
+      return null;
+  }
+
+}
